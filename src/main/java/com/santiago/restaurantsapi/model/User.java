@@ -19,11 +19,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data // Crea los getters y setter de todos los atributos
+@Data 
 @Table(name = "Users")
-@NoArgsConstructor // Crea un constructor vacío
-@AllArgsConstructor // Crea un constructor con todos los parámetros
-@Builder // Permite construir objetos de forma más clara y flexible
+@NoArgsConstructor 
+@AllArgsConstructor 
+@Builder 
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,9 +33,6 @@ public class User {
     private int age;
     private String email;
     private String password;
-
-    // Creamos una relación uno a muchos ya que un usuario puede tener muchas
-    // transacciones
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnore
