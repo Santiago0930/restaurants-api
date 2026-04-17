@@ -32,8 +32,10 @@ public class AuthControllerIntegrationTest {
     @Test
     @DisplayName("Debe acceder correctamente al sistema")
     public void login_successful() throws Exception {
+        String email = "test" + System.currentTimeMillis() + "@test.com";
+
         UserRequestDto nuevoUsuario = UserRequestDto.builder()
-                .email("Maria@test.com")
+                .email(email)
                 .password("1234")
                 .firstName("Esteban")
                 .lastName("Guerrero")
