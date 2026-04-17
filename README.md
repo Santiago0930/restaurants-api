@@ -1,6 +1,6 @@
-📌 Restaurants API
+# **Restaurants API**
 
-API REST desarrollada en Spring Boot que permite:
+### **API REST desarrollada en Spring Boot que permite:**
 
 - Registro de usuarios
 - Login de usuario
@@ -8,31 +8,37 @@ API REST desarrollada en Spring Boot que permite:
 - Consulta del historial de acciones
 - Logout
   
-🚀 Tecnologías utilizadas:
+### **Tecnologías utilizadas:**
 - Java 17
 - Spring Boot
 - Spring Security (JWT)
 - MySQL
 - Docker & Docker Compose
 - Geoapify API
+- Junit 5
+- Mockito
+- Spring Boot Test
   
-⚙️ Ejecución con Docker
+### **Ejecución con Docker**
 1. Construir el proyecto
 mvn clean package -DskipTests
 2. Levantar los contenedores
 docker compose up --build
 3. Acceso a la API mediante Postman por la Url: http://localhost:8080
 
-🛑 Detener la aplicación
+### **Ejecución de pruebas con Docker**
+- docker compose run --rm test
+
+### **Detener la aplicación**
 
 - docker compose down
 
-🔐 Autenticación
+### **Autenticación**
 
 La API utiliza JWT y para acceder a endpoints protegidos debe enviar:
 - Authorization: Bearer TOKEN_GENERADO_AL_HACER_LOGIN
 
-📌 Endpoints principales
+### **Endpoints principales**
 
 1. registerUser: Registra un usuario en el sistema.
    
@@ -69,7 +75,7 @@ La API utiliza JWT y para acceder a endpoints protegidos debe enviar:
 5. Logout: Registra la acción de logout del usuario.
 ```POST http://localhost:8080/auth/logout```
 
-🧠 Registro de acciones
+### **Registro de acciones**
 La aplicación registra automáticamente las siguientes acciones:
 
 - Registro de usuario (SIGN_UP)
@@ -77,7 +83,7 @@ La aplicación registra automáticamente las siguientes acciones:
 - Cierre de sesión (LOGOUT)
 - Consulta de restaurantes
   
-📦 Variables de entorno
+### **Variables de entorno**
 Configuradas en docker-compose.yml:
 
 - SPRING_DATASOURCE_URL
@@ -87,21 +93,18 @@ Configuradas en docker-compose.yml:
 - JWT_EXPIRATION
 - GEOAPIFY_API_KEY
   
-🧪 Flujo sugerido para probar la app
+### **Flujo sugerido para probar la app**
 
-- Registrar Usuario
-- Login
-- Consultar restaurantes por ciudad
-- Consultar restaurantes por coordenadas
-- Logout
-- Consultar historial de transacciones
+1. Registrar Usuario
+2. Login
+3. Consultar restaurantes por ciudad
+4. Consultar restaurantes por coordenadas
+5. Logout
+6. Consultar historial de transacciones
   
-🧠 Notas técnicas
+### **Notas**
 
 - Se utilizo arquitectura por capas (Controller - Service - Repository)
 - Se implemento inyección por constructor
 - Se maneja autenticación con JWT sin estado (stateless)
-
-👨‍💻 Autor
-
-- Santiago Guerrero
+- Se implementaron pruebas de Integración y unitarias
