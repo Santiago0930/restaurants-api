@@ -29,6 +29,23 @@ services:
       JWT_SECRET: mi_clave_super_secreta_para_firmar_tokens_123456
       JWT_EXPIRATION: 86400000
       GEOAPIFY_API_KEY: 17488dd471c44547a6fa73ee2c0698fb
-
+  test:
+    image: maven:3.9.9-eclipse-temurin-17
+    container_name: restaurants-test
+    working_dir: /app
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/restaurants_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: mi_clave_super_secreta_para_firmar_tokens_123456
+      JWT_EXPIRATION: 86400000
+      GEOAPIFY_API_KEY: 17488dd471c44547a6fa73ee2c0698fb
+    command: mvn test
+    
 volumes:
   mysql_data:

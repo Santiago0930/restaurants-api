@@ -18,17 +18,18 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
+    
+    private final UserRepository userRepository;
+    
     @Lazy
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private final TransactionService transactionService;
 
-    public UserServiceImpl(TransactionService transactionService) {
+    public UserServiceImpl(TransactionService transactionService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.transactionService = transactionService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
