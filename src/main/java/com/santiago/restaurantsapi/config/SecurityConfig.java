@@ -57,7 +57,7 @@ public class SecurityConfig {
      * Define endpoints públicos, autenticación JWT, política stateless y manejo de
      * errores 401.
      *
-     * @param http configuración de seguridad HTTP de Spring Security
+     * @param http         configuración de seguridad HTTP de Spring Security
      * @param introspector utilitario interno de Spring para mapeo de requests
      * @return cadena de filtros de seguridad configurada
      * @throws Exception si falla la configuración de seguridad
@@ -71,8 +71,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/login", "/user/**")
-                        .permitAll()
+                        .requestMatchers("/auth/login", "/user/register").permitAll()
+                        .requestMatchers("/restaurant/**").authenticated()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
