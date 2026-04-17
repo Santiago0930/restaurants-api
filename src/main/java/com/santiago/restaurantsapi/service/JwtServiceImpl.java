@@ -29,6 +29,7 @@ public class JwtServiceImpl implements JwtService {
      * Extrae el username (email) desde el token JWT.
      */
 
+    @Override
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -37,6 +38,7 @@ public class JwtServiceImpl implements JwtService {
      * Genera un token JWT para el usuario autenticado.
      */
 
+    @Override
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
@@ -45,6 +47,7 @@ public class JwtServiceImpl implements JwtService {
      * Valida si el token pertenece al usuario y no ha expirado.
      */
 
+    @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
         return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);

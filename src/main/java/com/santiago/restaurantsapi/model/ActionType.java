@@ -1,8 +1,8 @@
 package com.santiago.restaurantsapi.model;
 
 public enum ActionType {
-    SignUp,
-    login,
-    logout,
-    consultarRestaurantes
+    SIGN_UP,
+    LOGIN,
+    LOGOUT,
+    CONSULTAR_RESTAURANTES
 }

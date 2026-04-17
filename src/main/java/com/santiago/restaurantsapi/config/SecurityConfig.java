@@ -71,8 +71,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/login", "/user/register").permitAll()
-                        .requestMatchers("/restaurant/**").authenticated()
+                        .requestMatchers("/auth/login", "/user/**").permitAll()
+                        .requestMatchers("/restaurant/**", "/transactions/**").authenticated()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))

@@ -2,10 +2,10 @@ package com.santiago.restaurantsapi.service;
 
 import com.santiago.restaurantsapi.DTOs.JwtAuthenticationResponse;
 import com.santiago.restaurantsapi.DTOs.LoginRequestDTO;
+import com.santiago.restaurantsapi.model.ActionType;
 import com.santiago.restaurantsapi.model.User;
 import com.santiago.restaurantsapi.repository.UserRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
+    private final TransactionService transactionService;
+
+    public AuthenticationServiceImpl(TransactionService transactionService, AuthenticationManager authenticationManager,
+            JwtService jwtService, UserRepository userRepository) {
+        this.transactionService = transactionService;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
+    }
 
     /**
      * Autentica un usuario y genera un token JWT si las credenciales son válidas.
@@ -30,6 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      *         autenticado
      */
 
+    @Override
     public JwtAuthenticationResponse login(LoginRequestDTO request) {
         try {
             authenticationManager.authenticate(
@@ -41,8 +48,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Email no encontrado."));
 
-        String jwt = jwtService.generateToken(user);
-        return new JwtAuthenticationResponse(jwt, user.getEmail(), "USUARIO", user.getFirstName());
-    }
+        transactionService.saveTransaction(ActionType.LOGIN, user);
 
+        String jwt = jwtService.generateToken(user);
+        return new JwtAuthenticationResponse(jwt, user.getEmail(), "User", user.getFirstName());
+    }
 }

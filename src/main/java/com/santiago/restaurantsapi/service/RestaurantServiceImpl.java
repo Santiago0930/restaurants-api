@@ -11,9 +11,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.santiago.restaurantsapi.DTOs.CoordinatesDTO;
 import com.santiago.restaurantsapi.DTOs.RestaurantDTO;
+import com.santiago.restaurantsapi.model.ActionType;
+import com.santiago.restaurantsapi.model.User;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
+
+    private final TransactionService transactionService;
+
+    public RestaurantServiceImpl(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     @Value("${geoapify.api.key}")
     private String apiKey;
@@ -28,9 +36,10 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @return Lista de restaurantes cercanos.
      */
 
-    public List<RestaurantDTO> getRestaurantsByCity(String city) {
+    @Override
+    public List<RestaurantDTO> getRestaurantsByCity(String city, User user) {
         CoordinatesDTO coordinates = getCoordinates(city);
-        return getRestaurantsByCoordinates(coordinates.getLat(), coordinates.getLng());
+        return getRestaurantsByCoordinates(coordinates.getLat(), coordinates.getLng(), user);
     }
 
     /**
@@ -43,7 +52,9 @@ public class RestaurantServiceImpl implements RestaurantService {
      *                          Geoapify.
      */
 
-    public List<RestaurantDTO> getRestaurantsByCoordinates(Double lat, Double lon) {
+    @Override
+    public List<RestaurantDTO> getRestaurantsByCoordinates(Double lat, Double lon, User user) {
+        transactionService.saveTransaction(ActionType.CONSULTAR_RESTAURANTES, user);
         String response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
@@ -88,7 +99,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * @param city Nombre de la ciudad.
      * @return Coordenadas de la ciudad consultada.
      * @throws RuntimeException si ocurre un error al procesar la respuesta de
-     * Geoapify.
+     *                          Geoapify.
      */
 
     private CoordinatesDTO getCoordinates(String city) {

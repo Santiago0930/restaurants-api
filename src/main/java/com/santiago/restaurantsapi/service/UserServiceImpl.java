@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.santiago.restaurantsapi.DTOs.UserRequestDto;
 import com.santiago.restaurantsapi.DTOs.UserResponseDto;
+import com.santiago.restaurantsapi.model.ActionType;
 import com.santiago.restaurantsapi.model.User;
 import com.santiago.restaurantsapi.repository.UserRepository;
 
@@ -24,6 +25,12 @@ public class UserServiceImpl implements UserService {
     @Lazy
     private PasswordEncoder passwordEncoder;
 
+    private final TransactionService transactionService;
+
+    public UserServiceImpl(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
+
     /**
      * Registra un nuevo usuario en el sistema.
      * Recibe los datos del usuario desde el controlador,
@@ -37,6 +44,7 @@ public class UserServiceImpl implements UserService {
      * @throws RuntimeException si el email ya se encuentra registrado
      */
     @Transactional
+    @Override
     public UserResponseDto registerUser(UserRequestDto dto) {
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new RuntimeException("El email ya esta registrado");
@@ -52,6 +60,8 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
 
+        transactionService.saveTransaction(ActionType.SIGN_UP, user);
+
         return UserResponseDto.builder()
                 .id(savedUser.getId())
                 .firstName(savedUser.getFirstName())
@@ -60,6 +70,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
             @Override
@@ -69,5 +80,11 @@ public class UserServiceImpl implements UserService {
                         .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con email: " + email));
             }
         };
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
     }
 }
